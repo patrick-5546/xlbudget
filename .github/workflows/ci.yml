@@ -52,37 +52,8 @@ jobs:
       - name: "Run tox for python-${{ matrix.python-version }} on ${{ matrix.os }}"
         run: python -m tox
 
-      - name: "Upload coverage data"
-        uses: actions/upload-artifact@v3
-        with:
-          name: covdata
-          path: .coverage.*
-
-  coverage:
-    name: Generate code coverage reports
-    needs: tests
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.action != 'closed'
-    steps:
-      - name: "Check out the repo"
-        uses: "actions/checkout@v3"
-
-      - name: "Set up Python"
-        uses: "actions/setup-python@v4"
-        with:
-          python-version: "3.x"
-          cache: pip
-          cache-dependency-path: 'pyproject.toml'
-
-      - name: "Install dependencies"
-        run: python -m pip install tox tox-gh-actions
-
-      - name: "Download coverage data from tests"
-        uses: actions/download-artifact@v3
-        with:
-          name: covdata
-
       - name: "Combine coverage data from tests"
+        if: (matrix.python-version == '3.10') && (matrix.os == 'ubuntu-latest')
         run: |
           python -m tox -e coverage
           export TOTAL=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
@@ -90,7 +61,7 @@ jobs:
           echo "### Total coverage: ${TOTAL}%" >> $GITHUB_STEP_SUMMARY
 
       - name: "Make coverage badge"
-        if: (github.repository == 'patrick-5546/xlbudget') && (github.ref == 'refs/heads/main')
+        if: (matrix.python-version == '3.10') && (matrix.os == 'ubuntu-latest') && (github.repository == 'patrick-5546/xlbudget') && (github.ref == 'refs/heads/main')
         # https://gist.github.com/patrick-5546/845b19d91f3d03c94677f6fae6eb414c
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
@@ -105,6 +76,7 @@ jobs:
           valColorRange: ${{ env.total }}
 
       - name: "Upload HTML coverage report"
+        if: (matrix.python-version == '3.10') && (matrix.os == 'ubuntu-latest')
         uses: actions/upload-artifact@v3
         with:
           name: htmlcov
@@ -169,7 +141,7 @@ jobs:
     name: Deploy Docs version
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' || github.event.action != 'closed'
-    needs: [coverage, markdownlint, markdown-link-check]
+    needs: [tests, markdownlint, markdown-link-check]
     steps:
       - name: Check out code
         uses: actions/checkout@v3

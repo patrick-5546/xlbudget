@@ -70,6 +70,7 @@ plugins:
           import:
           - https://docs.python.org/3/objects.inv
           - https://openpyxl.readthedocs.io/en/stable/objects.inv
+          - http://pandas.pydata.org/pandas-docs/stable/objects.inv
           options:
             # heading options
             show_root_toc_entry: no
