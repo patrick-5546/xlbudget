@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: "Check out the repo"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v5"
 
       - name: "Set up Python"
         uses: "actions/setup-python@v5"
@@ -83,7 +83,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.action != 'closed'
     steps:
       - name: "Check out the repo"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v5"
 
       - name: "Set up Python"
         uses: "actions/setup-python@v5"
@@ -106,7 +106,7 @@ jobs:
     needs: docs-build
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Lint markdown pages
       uses: nosborn/github-action-markdown-cli@v3
@@ -123,7 +123,7 @@ jobs:
     needs: docs-build
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Check markdown pages for broken links
       uses: gaurav-nelson/github-action-markdown-link-check@v1
@@ -139,7 +139,7 @@ jobs:
     needs: [tests, markdownlint, markdown-link-check]
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # checkout all commits to get accurate page revision times
           # for the git-revision-date-localized plugin
@@ -153,7 +153,7 @@ jobs:
           cache-dependency-path: '**/requirements/docs.txt'
 
       - name: Download HTML coverage report
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: htmlcov
           path: htmlcov
@@ -181,7 +181,7 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # checkout all commits and branches to get gh-pages
           fetch-depth: '0'
